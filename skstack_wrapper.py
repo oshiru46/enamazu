@@ -138,7 +138,7 @@ class SkstackWrapper:
         return version
 
     def send_skreset(self):
-        ## echobackで直前に送信した"SKVER\r\n"が返ってくることもあった。謎
+        # echobackで直前に送信した"SKVER\r\n"が返ってくることもあった。謎
         self.send_bytes_then_ok("SKRESET\r\n".encode())
         pass
 
@@ -208,7 +208,7 @@ class SkstackWrapper:
         # echobackをチェックするメリットを把握していないが、雑にノーチェックにする
         # EVENT 21(UDP送信完了)
         event21_res = self.send_bytes(command, checks_echoback=False)
-        if not event21_res.startswith("EVENT 21"):
+        if not self.try_decode(event21_res).startswith("EVENT 21"):
             message = "[SKSENDTO] UDP send failure because could not receive EVENT 21."
             type(self).logger.error(message)
             raise Exception(message)
@@ -216,6 +216,7 @@ class SkstackWrapper:
         return echonet_res_data
 
     def wait_erxudp(self):
+        type(self).logger.debug("Waiting for receiving ERXUDP...")
         # 起きるかわからないが一応の無限ループ対策
         max_lines = 10
         for i in range(max_lines):
@@ -292,7 +293,7 @@ class SkstackWrapper:
     # ECHONET Liteコマンドを送る
     # data: ECHONET Liteフレーム
     def transmit(self, data):
-        print("transmitting...........")
+        type(self).logger.debug("transmitting...........")
 
         # HACK: ipv6_addrの設定有無をもって接続状態を見るのがかっこ悪い
         if self.ipv6_addr == "":

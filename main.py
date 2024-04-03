@@ -1,4 +1,4 @@
-from skstack_wrapper import SkstackWrapper
+from enamazu import Enamazu
 import os
 
 # Bルート認証ID
@@ -19,11 +19,11 @@ echonet_packet += b"\x01"         # OPC
 echonet_packet += b"\xE7"         # EPC
 echonet_packet += b"\x00"         # PDC
 
-skstack_wrapper = SkstackWrapper(rbid, rbpass, serial_port)
 try:
-    skstack_wrapper.connect()
-    skstack_wrapper.transmit(echonet_packet)
-except Exception:
-    skstack_wrapper.close()
+    with Enamazu(rbid, rbpass, serial_port) as namazu:
+        namazu.get_measured_instantaneous_electric_energy()
+except Exception as e:
+    print(e)
+    pass
 
 print("finish")
