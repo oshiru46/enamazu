@@ -27,12 +27,19 @@
 from logger import getLogger
 from skstack_wrapper import SkstackWrapper
 from typing import NamedTuple
-
+from objects_requirer import *
 
 class Enamazu:
     logger = getLogger(__name__)
 
     def __init__(self, rbid, rbpass, dev_name, baudrate=115200):
+        # HACK: メタプログラミングの機能でvnameを変数から取得できないか？
+        require_not_none(rbid, "rbid")
+        require_not_empty(rbid, "rbid")
+        require_not_none(rbpass, "rbpass")
+        require_not_empty(rbpass, "rbpass")
+        require_not_none(dev_name, "dev_name")
+        require_not_empty(dev_name, "dev_name")
         self.sks = SkstackWrapper(
             rbid=rbid, rbpass=rbpass, dev_name=dev_name, baudrate=baudrate)
         pass
